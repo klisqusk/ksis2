@@ -9,7 +9,7 @@ def parse_icmp(packet: bytes):
     if len(packet) < 28:
         return None, None
 
-    ip_header_len = (packet[0] & 0x0F) * 4
+    ip_header_len = (packet[0] & 0x0F) * 4 #для проверки где закинчивается айпи
     if len(packet) < ip_header_len + 8:
         return None, None
 
@@ -44,7 +44,7 @@ def traceroute(destination_ip: str, max_hops: int = 30, probes: int = 3, timeout
                 send_sock.setsockopt(socket.SOL_IP, socket.IP_TTL, ttl)
 
                 payload = b"test"
-                port = base_port + ttl + probe
+                port = base_port + (ttl - 1) * probes + probe
 
                 start_time = time.time()
                 send_sock.sendto(payload, (destination_ip, port))
